@@ -31,17 +31,18 @@ const rereadButton = document.querySelector("#reread");
 
 /* Review menu selectors */
 const reviewMenu = document.querySelector("#review-menu");
-const reviewPhrase = document.querySelector('#review-phrase');
-const menuButtonReview = document.querySelector('#menu-button-review');
+const reviewPhrase = document.querySelector("#review-phrase");
+const menuButtonReview = document.querySelector("#menu-button-review");
 
 let reviewArray = [];
 
 class StartReading {
   static beginReading(rate, text) {
     let sum = 0;
-    const intervalRate = 60000 / rate;
+    let intervalRate = 60000 / rate;
     wordP.style.display = "flex";
     questionButton.style.display = "none";
+    readButton.style.display = "none";
     insertText.style.display = "none";
     textAreaParent.style.height = "300px";
     textAreaParent.style.width = "300px";
@@ -50,10 +51,15 @@ class StartReading {
         wordP.textContent = text[sum];
         sum += 1;
       } else {
+        intervalRate = 0;
+        sum = 0;
+        text = "";
+        rate = 0;
         clearInterval();
       }
     }, intervalRate);
     questionButton.style.display = "flex";
+
     return;
   }
 
@@ -75,6 +81,7 @@ class StartReading {
       textAreaParent.style.display = "flex";
       textAreaParent.style.height = "auto";
       textAreaParent.style.width = "auto";
+      readButton.style.display = "flex";
       insertText.style.display = "flex";
       startReadDiv.style.display = "flex";
       wordP.style.display = "none";
@@ -111,7 +118,7 @@ class ChangeColor {
   }
   static AlterToLight() {
     ChangeColor.DarkModeHover();
-    menuButtonReview.classList.remove('color-mode-black');
+    menuButtonReview.classList.remove("color-mode-black");
     menuButton.classList.remove("color-mode-black");
     submit.classList.remove("color-mode-black");
     questionPlaceholder.classList.remove("placeholder-black");
@@ -131,7 +138,7 @@ class ChangeColor {
     readButton.classList.remove("color-mode-black");
     label.classList.remove("label-white");
 
-    menuButtonReview.classList.add('color-mode-white');
+    menuButtonReview.classList.add("color-mode-white");
     menuButton.classList.add("color-mode-white");
     submit.classList.add("color-mode-white");
     questionPlaceholder.classList.add("placeholder-white");
@@ -155,7 +162,7 @@ class ChangeColor {
   }
   static AlterToDark() {
     ChangeColor.LightModeHover();
-    menuButton.classList.remove('color-mode-white');
+    menuButton.classList.remove("color-mode-white");
     menuButton.classList.remove("color-mode-white");
     submit.classList.remove("color-mode-white");
     questionPlaceholder.classList.remove("placeholder-white");
@@ -175,7 +182,7 @@ class ChangeColor {
     textAreaParent.classList.remove("textarea-white");
     readButton.classList.remove("color-mode-white");
 
-    menuButtonReview.classList.add('color-mode-black');
+    menuButtonReview.classList.add("color-mode-black");
     menuButton.classList.add("color-mode-black");
     submit.classList.add("color-mode-black");
     questionPlaceholder.classList.add("placeholder-black");
@@ -227,14 +234,23 @@ const question4 = new Questions("Summarize in 50 words or less ");
 const questionObjectArray = [question1, question2, question3, question4];
 
 class QuestionSummary {
-  static formSummary() {
-    const summaryOne = `${questionObjectArray[0].answer} - ${questionObjectArray[0].answer}, in summary is ${questionObjectArray[3].answer}. What I found to be
-    the most important aspect of ${questionObjectArray[0].answer} was ${questionObjectArray[2].answer}. The least important part of
-    ${questionObjectArray[0].answer} was ${questionObjectArray[1].answer}`;
-    const summaryTwo = `${questionObjectArray[0].answer} - I found that ${questionObjectArray[0].answer}'s most important part was ${questionObjectArray[2].answer} and its least
-    was ${questionObjectArray[1].answer}. In summary, ${questionObjectArray[0].answer} is about ${questionObjectArray[3].answer}.`;
-    const summaryThree = `${questionObjectArray[0].answer} - The reading about ${questionObjectArray[0].answer}`;
-
+  static CheckReviewExistence() {
+    if (JSON.parse(localStorage.getItem("review-array")).length === 0) {
+      reviewButton.style.display = "none";
+    } else {
+      reviewButton.style.display = "flex";
+    }
+  }
+  static formSummary(one, two, three, four) {
+    const summaryOne = `${one.answer} - ${one.answer}, in summary is ${four.answer}. What I found to be
+        the most important aspect of ${one.answer} is ${three.answer}. The least important part of
+        ${one.answer} is ${two.answer}`;
+    console.log(summaryOne);
+    const summaryTwo = `${one.answer} - I find that ${one.answer}'s most important part is ${three.answer} and its least
+        is ${two.answer}. In summary, ${one.answer} is about ${four.answer}.`;
+    const summaryThree = `${one.answer} - The reading about ${one.answer} covers a variety of subjects that make up the topic.
+        Two of which include ${two.answer} and ${three.answer}. My biggest takeaway was ${three.answer}. In conclusion,
+        ${one.answer} is about ${four.answer}.`;
     const array = [summaryOne, summaryTwo, summaryThree];
     return array[Math.floor(Math.random() * array.length)];
   }
@@ -268,11 +284,8 @@ class QuestionSummary {
     questionNext.addEventListener("click", function () {
       rereadButton.style.display = "none";
       questionPrev.style.display = "flex";
-      console.log(questionTotal);
-
       questionObjectArray[questionTotal].answer = answerInput.value;
-      console.log(questionObjectArray[questionTotal].answer);
-      console.log(questionObjectArray);
+
       questionTotal += 1;
       if (questionTotal === 3) {
         questionObjectArray[questionTotal].answer = answerInput.value;
@@ -297,7 +310,6 @@ class QuestionSummary {
       } else {
         questionText.textContent = questionObjectArray[questionTotal].question;
       }
-      console.log(questionObjectArray[questionTotal]);
       if (questionTotal === 0) {
         questionPrev.style.display = "none";
         rereadButton.style.display = "flex";
@@ -310,15 +322,11 @@ class QuestionSummary {
       return;
     });
     submit.addEventListener("click", function () {
-      console.log(QuestionSummary.formSummary());
-      questionObjectArray.push(QuestionSummary.formSummary());
+      console.log("hi");
       if (JSON.parse(localStorage.getItem("review-array")) !== null) {
         console.log(reviewArray);
-        reviewArray.push();
-        reviewArray.push(
-          questionObjectArray,
-          ...JSON.parse(localStorage.getItem("review-array"))
-        );
+        reviewArray.push(questionObjectArray);
+        reviewArray.push(...JSON.parse(localStorage.getItem("review-array")));
         console.log(reviewArray);
         localStorage.setItem("review-array", JSON.stringify(reviewArray));
         reviewArray = [];
@@ -326,16 +334,19 @@ class QuestionSummary {
       } else if (JSON.parse(localStorage.getItem("review-array") === null)) {
         console.log("set");
         reviewArray.push(questionObjectArray);
+
         localStorage.setItem("review-array", JSON.stringify(reviewArray));
         reviewArray = [];
+        console.log(reviewArray);
       }
-      questionObjectArray.pop();
+      console.log(questionObjectArray);
       initialMenuDiv.style.display = "flex";
       questionDiv.style.display = "none";
       questionButton.style.display = "none";
       answerInput.value = "";
       questionText.textContent = "";
       questionTotal = 0;
+      QuestionSummary.CheckReviewExistence();
       return;
     });
     return;
@@ -344,44 +355,93 @@ class QuestionSummary {
 class ReviewReadings {
   static reviewMenuButton() {
     reviewButton.addEventListener("click", function () {
-      menuButtonReview.style.display = 'block';
-      reviewMenu.style.display = 'flex';
-      console.log(JSON.parse(localStorage.getItem("review-array")));
-      const loopedArr = JSON.parse(localStorage.getItem("review-array"));
-      console.log(loopedArr);
-      initialMenuDiv.style.display = "none";
-      for (let i of JSON.parse(localStorage.getItem("review-array"))) {
-        console.log(i[4]);
-        const div = document.createElement('div');
-        const p = document.createElement('p');
-        reviewMenu.append(div)
-        div.append(p)
-        p.textContent = i[4]
-        p.classList.add('word-white');
-        div.classList.add('div-black');
-        mode.addEventListener('click', function(){
-          if(p.className === 'word-white'){
-            p.classList.remove('word-white');
-            p.classList.add('word-black');
-            div.classList.remove('div-white');
-            div.classList.add('div-white');
-          }else{
-            p.classList.remove('word-black');
-            p.classList.add('word-white');
-            div.classList.add('div-black');
-            div.classList.remove('div-white');
-          }
-        })
-      }
+      let deleteArray = [];
+      if (JSON.parse(localStorage.getItem("review-array")) !== null) {
+        deleteArray.push(JSON.parse(localStorage.getItem("review-array")));
+        menuButtonReview.style.display = "block";
+        reviewMenu.style.display = "flex";
+        initialMenuDiv.style.display = "none";
+        for (let i of JSON.parse(localStorage.getItem("review-array"))) {
+          console.log(i[4]);
+          i.push(QuestionSummary.formSummary(i[0], i[1], i[2], i[3]));
+          console.log(i);
+          const div = document.createElement("div");
+          const p = document.createElement("p");
+          const button = document.createElement("button");
+          const deleteButton = document.createElement("button");
+          const buttonContainer = document.createElement("div");
 
-      return;
+          buttonContainer.classList.add("review-item-button-container");
+          deleteButton.classList.add("color-mode-black");
+          deleteButton.classList.add("minimize-button");
+          deleteButton.style.display = "flex";
+          deleteButton.textContent = "Delete";
+          button.classList.add("color-mode-black");
+          button.classList.add("minimize-button");
+          button.textContent = "Minimize";
+          reviewMenu.append(div);
+          div.append(p);
+          div.append(buttonContainer);
+          buttonContainer.append(button);
+          buttonContainer.append(deleteButton);
+          p.textContent = i[0].answer;
+          p.classList.add("p-header");
+          p.classList.add("word-white");
+          div.classList.add("div-black");
+          deleteButton.addEventListener("click", function (e) {
+            console.log(this.parentNode.parentNode);
+            this.parentNode.parentNode.style.display = "none";
+            console.log(this.parentNode.parentNode.childNodes[0].innerText);
+            const indexFound = (x) =>
+              x[0].answer ===
+              this.parentNode.parentNode.childNodes[0].innerText;
+            deleteArray.splice(deleteArray.findIndex(indexFound), 1);
+            if (deleteArray.length === 0) {
+              console.log("zero");
+              reviewButton.style.display = "none";
+              localStorage.setItem("review-array", JSON.stringify([]));
+            } else {
+              localStorage.setItem("review-array", JSON.stringify(deleteArray));
+            }
+          });
+          p.addEventListener("click", function () {
+            p.textContent = i[4];
+            button.style.display = "flex";
+            p.classList.remove("p-header");
+          });
+          button.addEventListener("click", function () {
+            p.textContent = i[0].answer;
+            button.style.display = "none";
+            p.classList.add("p-header");
+          });
+          mode.addEventListener("click", function () {
+            if (div.classList.contains("div-black")) {
+              p.style.color = "black";
+              div.classList.remove("div-black");
+              div.classList.add("div-white");
+              return;
+            } else {
+              p.style.color = "white";
+              div.classList.add("div-black");
+              div.classList.remove("div-white");
+              return;
+            }
+          });
+        }
+        deleteArray = [];
+        return;
+      }
     });
   }
-  static backToMenu(){
-    menuButtonReview.addEventListener('click',function(){
-      initialMenuDiv.style.display = 'flex';
-      reviewMenu.style.display = 'none';
-    })
+  static backToMenu() {
+    menuButtonReview.addEventListener("click", function () {
+      while (reviewMenu.lastChild !== menuButtonReview) {
+        reviewMenu.removeChild(reviewMenu.lastChild);
+      }
+      reviewMenu.style.display = "none";
+
+      initialMenuDiv.style.display = "flex";
+    });
   }
 }
 
@@ -389,6 +449,7 @@ mode.addEventListener("click", ChangeColor.SwitchColor);
 ReviewReadings.backToMenu();
 QuestionSummary.beginQuestions();
 QuestionSummary.questionButtons();
+QuestionSummary.CheckReviewExistence();
 StartReading.menuTransition();
 StartReading.readBtn();
 ReviewReadings.reviewMenuButton();
