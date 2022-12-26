@@ -97,6 +97,19 @@ class StartReading {
   }
 }
 
+class HandleInitialState{
+  static async Menu(){
+    if(JSON.parse(localStorage.getItem('review-array')) === null){
+      reviewButton.style.display = 'none';
+    }else if(JSON.parse(localStorage.getItem('review-array')).length === 0){
+      reviewButton.style.display = 'none';
+    }
+    else{
+      reviewButton.style.display = 'flex';
+    }
+  }
+}
+
 wpmInput.addEventListener("click", function () {
   wpmInput.value = "";
 });
@@ -235,7 +248,7 @@ const questionObjectArray = [question1, question2, question3, question4];
 
 class QuestionSummary {
   static CheckReviewExistence() {
-    if (JSON.parse(localStorage.getItem("review-array")).length === 0) {
+    if (JSON.parse(localStorage.getItem("review-array")) === null) {
       reviewButton.style.display = "none";
     } else {
       reviewButton.style.display = "flex";
@@ -367,7 +380,7 @@ class ReviewReadings {
           console.log(i);
           const div = document.createElement("div");
           const p = document.createElement("p");
-          const button = document.createElement("button");
+          const minButton = document.createElement("button");
           const deleteButton = document.createElement("button");
           const buttonContainer = document.createElement("div");
 
@@ -376,13 +389,13 @@ class ReviewReadings {
           deleteButton.classList.add("minimize-button");
           deleteButton.style.display = "flex";
           deleteButton.textContent = "Delete";
-          button.classList.add("color-mode-black");
-          button.classList.add("minimize-button");
-          button.textContent = "Minimize";
+          minButton.classList.add("color-mode-black");
+          minButton.classList.add("minimize-button");
+          minButton.textContent = "Minimize";
           reviewMenu.append(div);
           div.append(p);
           div.append(buttonContainer);
-          buttonContainer.append(button);
+          buttonContainer.append(minButton);
           buttonContainer.append(deleteButton);
           p.textContent = i[0].answer;
           p.classList.add("p-header");
@@ -406,22 +419,30 @@ class ReviewReadings {
           });
           p.addEventListener("click", function () {
             p.textContent = i[4];
-            button.style.display = "flex";
+            minButton.style.display = "flex";
             p.classList.remove("p-header");
           });
-          button.addEventListener("click", function () {
+          minButton.addEventListener("click", function () {
             p.textContent = i[0].answer;
-            button.style.display = "none";
+            minButton.style.display = "none";
             p.classList.add("p-header");
           });
           mode.addEventListener("click", function () {
             if (div.classList.contains("div-black")) {
               p.style.color = "black";
+              minButton.classList.remove('color-mode-black');
+              minButton.classList.add('color-mode-white');
+              deleteButton.classList.remove('color-mode-black');
+              deleteButton.classList.add('color-mode-white');
               div.classList.remove("div-black");
               div.classList.add("div-white");
               return;
             } else {
               p.style.color = "white";
+              minButton.classList.add('color-mode-black');
+              minButton.classList.remove('color-mode-white');
+              deleteButton.classList.add('color-mode-black');
+              deleteButton.classList.remove('color-mode-white');
               div.classList.add("div-black");
               div.classList.remove("div-white");
               return;
@@ -445,6 +466,7 @@ class ReviewReadings {
   }
 }
 
+HandleInitialState.Menu()
 mode.addEventListener("click", ChangeColor.SwitchColor);
 ReviewReadings.backToMenu();
 QuestionSummary.beginQuestions();

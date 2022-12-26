@@ -12,8 +12,8 @@ body {
   height: 400px;
   align-items: center;
   padding: 10px;
-  padding-top: 60px;
-  padding-bottom: 60px;
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 
 .extension-black {
@@ -180,7 +180,7 @@ body {
 }
 
 #start-read-div {
-  padding: 10px;
+  padding: 20px;
   display: none;
   flex-direction: column;
 }
@@ -283,6 +283,10 @@ body {
   border-radius: 10px;
 }
 
+#question-text {
+  font-size: 1.15rem;
+}
+
 .question-button {
   padding: 10px;
   margin: 5px;
@@ -377,8 +381,7 @@ body {
   scale: 1.2;
 }
 
-
-.review-item-button-container{
+.review-item-button-container {
   display: flex;
   margin: auto;
   flex-direction: row;
