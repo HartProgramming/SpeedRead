@@ -14,79 +14,95 @@
 
         <button class="color-mode-black" id="color-mode-button">Light</button>
       </div>
-      <div id="insert-text-parent" class="textarea-black">
-        <textarea
-          class="textarea-insert-black"
-          size="50"
-          id="textarea-insert"
-          type="text"
-          placeholder="Insert Your Reading Material"
-        ></textarea>
-        <p class="word-white" id="word"></p>
-      </div>
-      <div id="start-read-div">
-        <div id="set-wpm-div">
-          <label id="label" class="label-white" for="wpm"
-            >Set Words Per Min.</label
-          >
-          <input
-            class="color-mode-black"
-            type="number"
-            id="wpm"
-            value="200"
-            placeholder="Set WPM"
-          />
-        </div>
-        <div id="read-button-div">
-          <button class="color-mode-black" id="menu-button">Menu</button>
-          <button class="color-mode-black" id="read-button">
-            Start Reading
-          </button>
-          <button class="color-mode-black" id="question-button">
-            Answer Questions
-          </button>
-        </div>
-      </div>
-      <div id="initial-menu">
-        <button id="review-button-menu" class="menu-button color-mode-black">
-          Review
-        </button>
-        <button id="read-button-menu" class="menu-button color-mode-black">
-          Read
-        </button>
-      </div>
-      <div id="question-div">
-        <div class="placeholder-black" id="question-placeholder">
-          <p class="word-white" id="question-text"></p>
+        <div id="insert-text-parent" class="textarea-black">
           <textarea
             class="textarea-insert-black"
-            id="answer-input"
-            placeholder="Your answer..."
-            value=""
-            maxlength="500"
+            size="50"
+            id="textarea-insert"
             type="text"
+            placeholder="Insert Your Reading Material"
           ></textarea>
+          <p class="word-white" id="word"></p>
         </div>
-        <div id="question-buttons-div">
-          <button id="reread" class="color-mode-black question-button">
-            Reread
+        <div id="start-read-div">
+          <div id="set-wpm-div">
+            <label id="label" class="label-white" for="wpm"
+              >Set Words Per Min.</label
+            >
+            <input
+              class="color-mode-black"
+              type="number"
+              id="wpm"
+              value="200"
+              placeholder="Set WPM"
+            />
+          </div>
+          <div id="read-button-div">
+            <button class="reading-buttons color-mode-black" id="menu-button">
+              Menu
+            </button>
+            <button class="reading-buttons color-mode-black" id="read-button">
+              Read
+            </button>
+            <button
+              class="reading-buttons color-mode-black"
+              id="question-button"
+            >
+              Answer Questions
+            </button>
+            <button class="reading-buttons color-mode-black" id="reset-button">
+              Reset
+            </button>
+            <button class="reading-buttons color-mode-black" id="pause-button">
+              Pause
+            </button>
+            <button class="reading-buttons color-mode-black" id="play-button">
+              Play
+            </button>
+          </div>
+        </div>
+        <div id="initial-menu">
+          <button id="review-button-menu" class="menu-button color-mode-black">
+            Review
           </button>
-          <button
-            id="question-previous"
-            class="color-mode-black question-button"
-          >
-            Previous
-          </button>
-          <button id="question-next" class="color-mode-black question-button">
-            Next
-          </button>
-          <button id="submit" class="color-mode-black question-button">
-            Submit
+          <button id="read-button-menu" class="menu-button color-mode-black">
+            Read
           </button>
         </div>
-      </div>
-        <div class="review-menu-black" id="review-menu">
-          <button class="color-mode-black" id="menu-button-review">Menu</button>
+        <div id="question-div">
+          <div class="placeholder-black" id="question-placeholder">
+            <p class="word-white" id="question-text"></p>
+            <textarea
+              class="textarea-insert-black"
+              id="answer-input"
+              placeholder="Your answer..."
+              value=""
+              maxlength="500"
+              type="text"
+            ></textarea>
+          </div>
+          <div id="question-buttons-div">
+            <button id="reread" class="color-mode-black question-button">
+              Reread
+            </button>
+            <button
+              id="question-previous"
+              class="color-mode-black question-button"
+            >
+              Previous
+            </button>
+            <button id="question-next" class="color-mode-black question-button">
+              Next
+            </button>
+            <button id="submit" class="color-mode-black question-button">
+              Submit
+            </button>
+          </div>
+        </div>
+          <div class="review-menu-black" id="review-menu">
+            <button class="color-mode-black" id="menu-button-review">
+              Menu
+            </button>
         </div>
     </div>
 

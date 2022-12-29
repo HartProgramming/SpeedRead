@@ -8,7 +8,11 @@ const menuButton = document.querySelector("#menu-button");
 const insertText = document.querySelector("#textarea-insert");
 const textAreaParent = document.querySelector("#insert-text-parent");
 const readButton = document.querySelector("#read-button");
+const readButtonsDiv = document.querySelector("#read-button-div");
 const questionButton = document.querySelector("#question-button");
+const pauseButton = document.querySelector("#pause-button");
+const resetButton = document.querySelector("#reset-button");
+const playButton = document.querySelector("#play-button");
 /*Initial Menu Action Selectors*/
 const readButtonMenu = document.querySelector("#read-button-menu");
 const initialMenuDiv = document.querySelector("#initial-menu");
@@ -39,27 +43,80 @@ let reviewArray = [];
 class StartReading {
   static beginReading(rate, text) {
     let sum = 0;
+    let total;
+    let interval;
     let intervalRate = 60000 / rate;
     wordP.style.display = "flex";
-    questionButton.style.display = "none";
     readButton.style.display = "none";
     insertText.style.display = "none";
     textAreaParent.style.height = "300px";
     textAreaParent.style.width = "300px";
-    setInterval(() => {
-      if (sum !== text.length) {
+    const startInterval = (rate, text, sum) => {
+      interval = setInterval(() => {
         wordP.textContent = text[sum];
         sum += 1;
-      } else {
-        intervalRate = 0;
-        sum = 0;
-        text = "";
-        rate = 0;
-        clearInterval();
-      }
-    }, intervalRate);
+        total = sum;
+        console.log(sum);
+        console.log(text[sum]);
+        console.log(text.length);
+        if (sum === text.length) {
+          intervalRate = 0;
+          sum = 0;
+          total = sum;
+          text = "";
+          rate = 0;
+          console.log("yo");
+          pauseButton.style.display = "none";
+          readButtonsDiv.style.width = "90%";
+          readButtonsDiv.style.flexWrap = "nowrap";
+          clearInterval(interval);
+        }
+      }, intervalRate);
+    };
+    startInterval(rate, text, sum);
+    resetButton.addEventListener("click", function () {
+      sum = 0;
+      wpmInput.value = 100;
+      rate = wpmInput.value;
+      wordP.style.display = "none";
+      questionButton.style.display = "none";
+      pauseButton.style.display = "none";
+      readButton.style.display = "flex";
+      resetButton.style.display = "none";
+      insertText.style.display = "flex";
+      textAreaParent.style.height = "auto";
+      textAreaParent.style.width = "auto";
+      pauseButton.style.display = "none";
+      resetButton.style.display = "none";
+      readButtonsDiv.style.width = "auto";
+      clearInterval(interval);
+    });
+    pauseButton.addEventListener("click", function () {
+      clearInterval(interval);
+      pauseButton.style.display = "none";
+      playButton.style.display = "flex";
+    });
+    playButton.addEventListener("click", function () {
+      console.log("two");
+      rate = wpmInput.value;
+      text = StartReading.formArr();
+      console.log(text);
+      sum = total;
+      console.log(sum);
+      console.log(total);
+      console.log(wordP.textContent);
+      startInterval(rate, text, sum);
+      playButton.style.display = "none";
+      pauseButton.style.display = "flex";
+    });
+    questionButton.addEventListener("click", function () {
+      sum = 0;
+      wpmInput.value = 200;
+      rate = wpmInput.value;
+      clearInterval(interval);
+    });
+    clearInterval();
     questionButton.style.display = "flex";
-
     return;
   }
 
@@ -67,10 +124,14 @@ class StartReading {
     return insertText.value.split(" ");
   }
 
-  static readBtn() {
+  static async readBtn() {
     readButton.addEventListener("click", function () {
       console.log("hi");
-      return StartReading.beginReading(wpmInput.value, StartReading.formArr());
+      pauseButton.style.display ='flex';
+      resetButton.style.display = 'flex';
+      readButtonsDiv.style.width = '70%';
+      StartReading.beginReading(wpmInput.value, StartReading.formArr());
+      return true;
     });
   }
 
@@ -82,8 +143,12 @@ class StartReading {
       textAreaParent.style.height = "auto";
       textAreaParent.style.width = "auto";
       readButton.style.display = "flex";
+      pauseButton.style.display = 'none';
+      resetButton.style.display = 'none';
       insertText.style.display = "flex";
       startReadDiv.style.display = "flex";
+      readButtonsDiv.style.width = 'auto';
+      questionButton.style.display = "none";
       wordP.style.display = "none";
       insertText.value = "";
       return;
@@ -97,15 +162,14 @@ class StartReading {
   }
 }
 
-class HandleInitialState{
-  static async Menu(){
-    if(JSON.parse(localStorage.getItem('review-array')) === null){
-      reviewButton.style.display = 'none';
-    }else if(JSON.parse(localStorage.getItem('review-array')).length === 0){
-      reviewButton.style.display = 'none';
-    }
-    else{
-      reviewButton.style.display = 'flex';
+class HandleInitialState {
+  static async Menu() {
+    if (JSON.parse(localStorage.getItem("review-array")) === null) {
+      reviewButton.style.display = "none";
+    } else if (JSON.parse(localStorage.getItem("review-array")).length === 0) {
+      reviewButton.style.display = "none";
+    } else {
+      reviewButton.style.display = "flex";
     }
   }
 }
@@ -129,8 +193,13 @@ class ChangeColor {
     mode.textContent = "Light";
     return;
   }
-  static AlterToLight() {
+
+  static RemoveClassDark() {
     ChangeColor.DarkModeHover();
+    playButton.classList.remove("color-mode-black");
+    reviewMenu.classList.remove("review-menu-black");
+    resetButton.classList.remove("color-mode-black");
+    pauseButton.classList.remove("color-mode-black");
     menuButtonReview.classList.remove("color-mode-black");
     menuButton.classList.remove("color-mode-black");
     submit.classList.remove("color-mode-black");
@@ -150,7 +219,14 @@ class ChangeColor {
     textAreaParent.classList.remove("textarea-black");
     readButton.classList.remove("color-mode-black");
     label.classList.remove("label-white");
+    return;
+  }
 
+  static AddClassLight() {
+    playButton.classList.add("color-mode-white");
+    reviewMenu.classList.add("review-menu-white");
+    resetButton.classList.add("color-mode-white");
+    pauseButton.classList.add("color-mode-white");
     menuButtonReview.classList.add("color-mode-white");
     menuButton.classList.add("color-mode-white");
     submit.classList.add("color-mode-white");
@@ -173,8 +249,13 @@ class ChangeColor {
     readButton.classList.add("color-mode-white");
     return;
   }
-  static AlterToDark() {
+
+  static RemoveClassLight() {
     ChangeColor.LightModeHover();
+    playButton.classList.remove("color-mode-white");
+    reviewMenu.classList.remove("review-menu-white");
+    resetButton.classList.remove("color-mode-white");
+    pauseButton.classList.remove("color-mode-white");
     menuButton.classList.remove("color-mode-white");
     menuButton.classList.remove("color-mode-white");
     submit.classList.remove("color-mode-white");
@@ -194,7 +275,14 @@ class ChangeColor {
     container.classList.remove("extension-white");
     textAreaParent.classList.remove("textarea-white");
     readButton.classList.remove("color-mode-white");
+    return;
+  }
 
+  static AddClassDark() {
+    playButton.classList.add("color-mode-black");
+    reviewMenu.classList.add("review-menu-black");
+    resetButton.classList.add("color-mode-black");
+    pauseButton.classList.add("color-mode-black");
     menuButtonReview.classList.add("color-mode-black");
     menuButton.classList.add("color-mode-black");
     submit.classList.add("color-mode-black");
@@ -221,10 +309,12 @@ class ChangeColor {
     console.log(header.style.color);
     if (mode.textContent === "Light") {
       console.log("light");
-      return ChangeColor.AlterToLight();
+      ChangeColor.AddClassLight();
+      ChangeColor.RemoveClassDark();
     } else {
       console.log("dark");
-      return ChangeColor.AlterToDark();
+      ChangeColor.AddClassDark();
+      ChangeColor.RemoveClassLight();
     }
     return;
   }
@@ -292,6 +382,15 @@ class QuestionSummary {
       questionDiv.style.display = "none";
       textAreaParent.style.display = "flex";
       startReadDiv.style.display = "flex";
+      textAreaParent.style.height = 'auto';
+      textAreaParent.style.width = 'auto';
+      insertText.style.height = '300px';
+      insertText.style.display = 'flex';
+      insertText.style.width = '300px';
+      resetButton.style.display = 'none';
+      readButton.style.display = 'flex';
+      readButtonsDiv.style.display = 'flex';
+      questionButton.style.display = "none";
       return;
     });
     questionNext.addEventListener("click", function () {
@@ -430,19 +529,19 @@ class ReviewReadings {
           mode.addEventListener("click", function () {
             if (div.classList.contains("div-black")) {
               p.style.color = "black";
-              minButton.classList.remove('color-mode-black');
-              minButton.classList.add('color-mode-white');
-              deleteButton.classList.remove('color-mode-black');
-              deleteButton.classList.add('color-mode-white');
+              minButton.classList.remove("color-mode-black");
+              minButton.classList.add("color-mode-white");
+              deleteButton.classList.remove("color-mode-black");
+              deleteButton.classList.add("color-mode-white");
               div.classList.remove("div-black");
               div.classList.add("div-white");
               return;
             } else {
               p.style.color = "white";
-              minButton.classList.add('color-mode-black');
-              minButton.classList.remove('color-mode-white');
-              deleteButton.classList.add('color-mode-black');
-              deleteButton.classList.remove('color-mode-white');
+              minButton.classList.add("color-mode-black");
+              minButton.classList.remove("color-mode-white");
+              deleteButton.classList.add("color-mode-black");
+              deleteButton.classList.remove("color-mode-white");
               div.classList.add("div-black");
               div.classList.remove("div-white");
               return;
@@ -466,7 +565,6 @@ class ReviewReadings {
   }
 }
 
-HandleInitialState.Menu()
 mode.addEventListener("click", ChangeColor.SwitchColor);
 ReviewReadings.backToMenu();
 QuestionSummary.beginQuestions();
@@ -475,3 +573,4 @@ QuestionSummary.CheckReviewExistence();
 StartReading.menuTransition();
 StartReading.readBtn();
 ReviewReadings.reviewMenuButton();
+HandleInitialState.Menu();
